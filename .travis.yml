@@ -1,0 +1,15 @@
+# See: https://docs.travis-ci.com/user/languages/python/
+language: python
+sudo: false
+python:
+  - 3.7
+  - 3.6
+  - 3.5
+matrix:
+  fast_finish: true
+  allow_failures:
+    - python: 3.6
+    - python: 3.5
+env:
+  - PYTHONPATH=src
+script: pytest

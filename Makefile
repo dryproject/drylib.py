@@ -1,38 +1,48 @@
-PANDOC ?= pandoc
-
-PACKAGE :=
+PACKAGE := drylib
 VERSION := $(shell cat VERSION)
 
-SOURCES :=
+PANDOC  ?= pandoc
+PYTHON  ?= python3
+PYTEST  ?= pytest
+TWINE   ?= twine
 
-TARGETS :=
+SOURCES := $(wildcard src/*/*.py src/*/*/*.py)
 
 %.html: %.rst
 	$(PANDOC) -o $@ -t html5 -s $<
 
-all: build
+all: dist
 
-build: $(TARGETS)
+dist/$(PACKAGE)-$(VERSION).tar.gz: setup.py MANIFEST.in $(SOURCES)
+	$(PYTHON) setup.py sdist --formats=gztar
 
-check:
-	@echo "not implemented"; exit 2 # TODO
+dist/$(PACKAGE)-$(VERSION).tar.xz: setup.py MANIFEST.in $(SOURCES)
+	$(PYTHON) setup.py sdist --formats=xztar
 
-dist:
-	@echo "not implemented"; exit 2 # TODO
+dist/$(PACKAGE)-$(VERSION)-py3-none-any.whl: setup.py $(SOURCES)
+	$(PYTHON) setup.py bdist_wheel
 
-install:
-	@echo "not implemented"; exit 2 # TODO
+build: setup.py $(SOURCES)
+	$(PYTHON) setup.py build
 
-uninstall:
-	@echo "not implemented"; exit 2 # TODO
+check: $(SOURCES) $(wildcard test/test*.py)
+	PYTHONPATH=src $(PYTEST)
 
-clean:
-	@rm -f *~ $(TARGETS)
+dist:  sdist bdist
+sdist: dist/$(PACKAGE)-$(VERSION).tar.gz
+bdist: dist/$(PACKAGE)-$(VERSION)-py3-none-any.whl
+
+install: setup.py $(SOURCES)
+	$(PYTHON) setup.py build
+
+clean: setup.py
+	@rm -Rf *~ build dist
+	$(PYTHON) setup.py clean
 
 distclean: clean
 
 mostlyclean: clean
 
-.PHONY: check dist install clean distclean mostlyclean
+.PHONY: build check dist sdist bdist install clean distclean mostlyclean
 .SECONDARY:
 .SUFFIXES:

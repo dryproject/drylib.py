@@ -15,13 +15,14 @@ def readfile(*filepath):
 PWD = path.abspath(path.dirname(__file__))
 
 VERSION          = readfile(PWD, 'VERSION').rstrip()
-LONG_DESCRIPTION = readfile(PWD, 'README')
+LONG_DESCRIPTION = readfile(PWD, 'README.rst')
 
 setup(
   name='drylib',
   version=VERSION,
   description="DRYlib for Python",
   long_description=LONG_DESCRIPTION,
+  long_description_content_type='text/x-rst',
   url='https://github.com/dryproject/drylib.py',
   author='Arto Bendiken',
   author_email='arto@dryproject.org',
@@ -36,15 +37,19 @@ setup(
     'Natural Language :: English',
     'Operating System :: OS Independent',
     'Programming Language :: Python :: 3 :: Only',
+    'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.7',
     'Topic :: Scientific/Engineering :: Mathematics',
     'Topic :: Software Development :: Libraries',
     'Topic :: Text Processing :: General',
   ],
   keywords='drylib polyglot',
+  project_urls={},
   packages=find_packages(where='src'),
   package_dir={'': 'src'},
   install_requires=[],
+  python_requires='~=3.5',
   extras_require={
     'test': ['pytest'],
   },
